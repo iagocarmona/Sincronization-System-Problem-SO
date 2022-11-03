@@ -1,24 +1,18 @@
 CC=gcc -Wall
 
-P1=aexec01
-P2=exec02
-P3=exec03
-P4=exec04
+P1=AlunosDuvidas/alunos_duvidas
+P2=AlunosSO/alunos_so
+P3=Professor/professor
+P4=resource_monitor
 
-PROGS=$(P1) $(P2) $(P3) $(P4)
+PROGS=main
 
 FLAGS=-lpthread
 
 all: $(PROGS)
 
-$(P1):
-	$(CC) $(P1).c -o $(P1) $(FLAGS)
-$(P2):
-	$(CC) $(P2).c -o $(P2) $(FLAGS)
-$(P3):
-	$(CC) $(P3).c -o $(P3) $(FLAGS)
-$(P4):
-	$(CC) $(P4).c -o $(P4) $(FLAGS)
-	
 clean:
-	rm $(PROGS)
+	rm -f $(PROGS)
+
+main: main.c resource_monitor.c resource_monitor.h
+	$(CC) main.c $(P4).c $(P1).c $(P2).c $(P3).c -o $(PROGS) $(FLAGS)

@@ -6,6 +6,8 @@
 #include "AlunosSO/alunos_so.h"
 #include "AlunosDuvidas/alunos_duvidas.h"
 
+#include "resource_monitor.h"
+
 int main()
 {
     pthread_t professor;
@@ -15,18 +17,18 @@ int main()
     // Inicializa o monitor
     initMonitor();
 
+    // professor
+    pthread_create(&professor, NULL, (void *)professorThread, NULL);
+
     // alunos_so
     for(int i=0; i < NUM_ALUNOS_SO; i++) {
         pthread_create(&(alunos_so[i]), NULL, (void *)alunosSOThread, (void *)(intptr_t)(i));
     }
 
-     // alunos_duvida
+    // alunos_duvida
     for(int i=0; i < NUM_ALUNOS_DUVIDA; i++) {
         pthread_create(&(alunos_duvida[i]), NULL, (void *)alunosDuvidasThread, (void *)(intptr_t)(i));
     }
-
-    // professor
-    pthread_create(&professor, NULL, (void *)professorThread, NULL);
 
     // Espera as threads alunos_so acabarem
     for (int i=0; i < NUM_ALUNOS_SO; i++) {
@@ -43,4 +45,6 @@ int main()
 
     // Destroi o monitor
     destroyMonitor();
+
+    printf("\n");
 }
