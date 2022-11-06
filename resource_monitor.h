@@ -17,7 +17,7 @@ pthread_cond_t professor, alunosSO, alunosDuvida, prDarAula, prAtenderAlunos;
 
 /* --- recursos --- */
 int alunosSOCount;
-int alunosDuvidaCount;
+int alunosDuvidaCount = 0;
 
 /* --- monitor operations --- */
 void initMonitor();

@@ -9,7 +9,13 @@ void *alunosSOThread(void *ptr){
 }
 
 void entrarSalaAula(int num){
+    alunosSOCount++; //aluno de SO chegou, atualiza variável de quantidade de alunos na sala
     printf("\talunoSO_%d entra na sala\n", num);
+    if(alunosSOCount == NUM_TURMA_SO){ //verifica se último aluno chegou
+        chamarProfessor(num);// o último aluno chama professor para aula 
+    }else{
+        aguardarAula(num);
+    }
 }
 
 void sairSalaAula(int num){
@@ -17,9 +23,9 @@ void sairSalaAula(int num){
 }
 
 void aguardarAula(int num){
-    printf("\talunoSO_%d aguardando professor dar aula\n", num);
+    printf("\talunoSO_%d aguardando professor começar a aula\n", num);
     pthread_cond_wait(&prDarAula, &mutex);
-    obaAulaSO();
+    obaAulaSO(num);
 }
 
 void obaAulaSO(int num){
@@ -28,4 +34,5 @@ void obaAulaSO(int num){
 
 void chamarProfessor(int num){
     printf("\talunoSO_%d chama professor\n", num);
+    pthread_cond_signal(&alunosPresentes); //último aluno sinaliza para o professor que a aula pode começar
 }
