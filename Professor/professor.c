@@ -14,7 +14,9 @@ void *professorThread(void *ptr){
     pthread_exit(0);
 }
 
-void prepararAula(){}
+void prepararAula(){
+    printf("Professor está preparando a aula!");
+}
 
 void atenderAlunos(){
     if(alunosDuvidaCount == NUM_ALUNOS_DUVIDA){
@@ -32,6 +34,11 @@ void darAula(){
     pthread_cond_broadcast(&prDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
 }
 
-void dispensarAlunos(){}
+void dispensarAlunos(){
+    printf("Aula acabou, dispensando alunos...");
+    thread_cond_broadcast(&fimAula); //sinaliza para todos os alunos de SO que a aula acabou
+}
 
-void irEmboraCasa(){}
+void irEmboraCasa(){
+    
+}

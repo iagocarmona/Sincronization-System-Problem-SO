@@ -4,9 +4,9 @@
 
 void *alunosDuvidasThread(void *ptr){
     int num = (intptr_t) ptr;
-    chegarSalaProfessor();
-    aguardarProfessor();
-    tirarDuvidas();
+    chegarSalaProfessor(num);
+    aguardarProfessor(num);
+    tirarDuvidas(num);
     pthread_exit(0);
 }
 

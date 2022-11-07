@@ -5,7 +5,9 @@
 void *alunosSOThread(void *ptr){
     int num = (intptr_t) ptr;
     aguardarAula(num);
-    pthread_exit(0);
+    pthread_cond_wait(&fimAula, &mutex);
+    sairSalaAula(num);
+    //pthread_exit(0);
 }
 
 void entrarSalaAula(int num){
@@ -20,6 +22,7 @@ void entrarSalaAula(int num){
 
 void sairSalaAula(int num){
     printf("\talunoSO_%d sai na sala\n", num);
+    pthread_exit(0);
 }
 
 void aguardarAula(int num){
@@ -35,4 +38,6 @@ void obaAulaSO(int num){
 void chamarProfessor(int num){
     printf("\talunoSO_%d chama professor\n", num);
     pthread_cond_signal(&alunosPresentes); //último aluno sinaliza para o professor que a aula pode começar
+    pthread_cond_wait(&prDarAula, &mutex);
+    obaAulaSO(num);
 }
