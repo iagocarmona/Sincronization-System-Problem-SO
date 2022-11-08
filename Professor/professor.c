@@ -4,41 +4,46 @@
 
 void *professorThread(void *ptr){
     int num = (intptr_t) ptr;
-
-    while(alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){
+    pthread_mutex_lock(&monitor.mutex);
+    while(monitor.alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){
         printf("Professor %d\n", num);
         darAula();
         pthread_exit(0);
     }
     atenderAlunos();
+    pthread_mutex_unlock(&monitor.mutex);
     pthread_exit(0);
 }
 
 void prepararAula(){
+    sleep(1);
     printf("Professor está preparando a aula!");
 }
 
 void atenderAlunos(){
-    if(alunosDuvidaCount == NUM_ALUNOS_DUVIDA){
-         printf("Estou atendendo os alunos...\n");
+    if(monitor.alunosDuvidaCount == NUM_ALUNOS_DUVIDA){
+        sleep(1);
+        printf("Estou atendendo os alunos...\n");
         for(int i = 1; i <= NUM_ALUNOS_DUVIDA; i++){
-            pthread_cond_signal(&prAtenderAlunos);
+            pthread_cond_signal(&monitor.prAtenderAlunos);
         }
     }
 }
 
 void darAula(){
-    pthread_cond_wait(&alunosPresentes, &mutex); //espera pela sinalização de que todos 
-                                                 //os alunos chegaram
+    pthread_cond_wait(&monitor.alunosPresentes, &monitor.mutex); //espera pela sinalização de que todos os alunos chegaram
     printf("Vou dar aula!\n");
-    pthread_cond_broadcast(&prDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
+    sleep(1);
+    pthread_cond_broadcast(&monitor.prDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
 }
 
 void dispensarAlunos(){
-    printf("Aula acabou, dispensando alunos...");
-    thread_cond_broadcast(&fimAula); //sinaliza para todos os alunos de SO que a aula acabou
+    sleep(1);
+    printf("Aula acabou, dispensando alunos...\n");
+    pthread_cond_broadcast(&monitor.fimAula); //sinaliza para todos os alunos de SO que a aula acabou
 }
 
 void irEmboraCasa(){
-    
+    sleep(1);
+    printf("Professor indo embora pra casa...");
 }
