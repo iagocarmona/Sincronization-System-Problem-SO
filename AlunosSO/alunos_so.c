@@ -31,6 +31,7 @@ void entrarSalaAula(int num){
 void sairSalaAula(int num){
     sleep(1);
     pthread_cond_wait(&monitor.fimAula, &monitor.mutex);
+    monitor.alunosSOCount--;
     printf("\talunoSO_%d sai da sala\n", num);
 }
 
