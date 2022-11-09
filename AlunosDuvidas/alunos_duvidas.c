@@ -36,16 +36,25 @@ void chegarSalaProfessor(int num){
 void aguardarProfessor(int num){
     sleep(1);
     printf("\t\talunoDuvida_%d está aguardando atendimento do professor.\n", num);
+    while(!monitor.atendimento){
+        if(monitor.professorEstaDandoAula){
+            professorEstaDandoAula(num);
+        }
+    }
     pthread_cond_wait(&monitor.prAtenderAlunos, &monitor.mutex); //espera pela sinalização do professor para tirar suas dúvidas
     tirarDuvidas(num);
 }
 
 void tirarDuvidas(int num){
-    printf("\t\talunoDuvida_%d vai tirar suas dúvidas...\n", num);
-    sleep(1); //simulação de tirar dúvidas
-    printf("\t\talunoDuvida_%d tirou suas dúvidas e vai embora\n", num);
-    sairSalaProfessor(num);
-    monitor.alunosDuvidaCount--; //aluno tirou dúvida e decremente variável de alunos com dúvida
+    if(!monitor.professorEstaDandoAula){
+        printf("\t\talunoDuvida_%d vai tirar suas dúvidas...\n", num);
+        sleep(1); //simulação de tirar dúvidas
+        printf("\t\talunoDuvida_%d tirou suas dúvidas e vai embora\n", num);
+        sairSalaProfessor(num);
+        monitor.alunosDuvidaCount--; //aluno tirou dúvida e decremente variável de alunos com dúvida7
+    } else{
+        professorEstaDandoAula(num);
+    }
 }
 
 void sairSalaProfessor(int num){
