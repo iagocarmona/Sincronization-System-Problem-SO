@@ -44,7 +44,8 @@ void dispensarAlunos();
 
 
 /**
- * @brief 
+ * @brief espera todos os alunos saŕem da sala, após isso ocorrer, o professor
+ * vai embora para casa
  * 
  */
 void irEmboraCasa();
