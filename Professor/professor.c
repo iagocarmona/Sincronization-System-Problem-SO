@@ -41,6 +41,7 @@ void prepararAula(){
 
 void atenderAlunos(){
     printf("Estou atendendo os alunos...\n");
+    monitor.atendimento = 1;
     pthread_cond_signal(&monitor.prAtenderAlunos);
     sleep(1);
 }
