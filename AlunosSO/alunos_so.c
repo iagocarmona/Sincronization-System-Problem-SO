@@ -21,7 +21,7 @@ void entrarSalaAula(int num){
     printf("\talunoSO_%d entra na sala\n", num);
     printf("\t%d/%d Alunos em sala.\n", monitor.alunosSOCount, NUM_ALUNOS_SO);
     if(monitor.alunosSOCount == NUM_ALUNOS_SO){ //verifica se último aluno chegou
-        printf("\tTODOS OS ALUNOS CHEGARAM!");
+        printf("\tTODOS OS ALUNOS CHEGARAM!\n");
         chamarProfessor(num);// o último aluno chama professor para aula 
     }else{
         aguardarAula(num);
