@@ -41,7 +41,7 @@ void prepararAula(){
 
 void atenderAlunos(){
     printf("Estou atendendo os alunos...\n");
-    monitor.atendimento = 1;
+    monitor.atendimento = TRUE;
     pthread_cond_signal(&monitor.prAtenderAlunos);
     sleep(1);
 }
@@ -65,5 +65,5 @@ void irEmboraCasa(){
 }
 
 void finalizarAtendimento(){
-    printf("Irei dar minha aula, encerrando atendimenti de dúvidas...");
+    printf("Irei dar minha aula, encerrando atendimento de dúvidas...");
 }

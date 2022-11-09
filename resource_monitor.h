@@ -34,6 +34,15 @@ struct timespec t;
 time_t Time;
 
 /* --- monitor operations --- */
-void initMonitor();
+/**
+ * @brief inicializa as variáveis de condiçoes e o mutex
+ * 
+ */
+void initMonitor(); 
+
+/**
+ * @brief libera as variáveis de condições e o mutex
+ * 
+ */
 void destroyMonitor();
 
