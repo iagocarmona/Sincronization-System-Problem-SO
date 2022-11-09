@@ -4,18 +4,28 @@
 
 void *alunosDuvidasThread(void *ptr){
     int num = (intptr_t) ptr;
+
+    srand(time(NULL) + (num * 2));
+    int sleepTime = rand() % 5; 
+    sleep(sleepTime);
+
     pthread_mutex_lock(&monitor.mutex);
-    chegarSalaProfessor(num);
-    aguardarProfessor(num);
-    tirarDuvidas(num);
+    if(!monitor.professorEstaDandoAula){
+        chegarSalaProfessor(num);
+        aguardarProfessor(num);
+        tirarDuvidas(num);
+    }else{
+        printf("\t\tProfessor está dando aula! AlunoDuvida_%d indo embora.", num);
+        pthread_exit(0);
+    }
     pthread_mutex_unlock(&monitor.mutex);
-    pthread_exit(0);
 }
 
 void chegarSalaProfessor(int num){
     sleep(1);
     printf("\t\talunoDuvida_%d chegou na porta do professor\n", num);
     monitor.alunosDuvidaCount++; //novo aluno quer tirar dúvidas - incrementa variável que sinaliza a quantidade de alunos com dúvidas
+    printf("\t\t%d/%d AlunosDuvida esperando atendimento.\n", monitor.alunosDuvidaCount, NUM_GRUPO_ATENDE_ALUNOS);
     aguardarProfessor(num);
 }
 
@@ -28,7 +38,7 @@ void aguardarProfessor(int num){
 
 void tirarDuvidas(int num){
     printf("\t\talunoDuvida_%d vai tirar suas dúvidas...\n", num);
-    sleep(2); //simulação de tirar dúvidas
+    sleep(1); //simulação de tirar dúvidas
     printf("\t\talunoDuvida_%d tirou suas dúvidas e vai embora\n", num);
     sairSalaProfessor();
     monitor.alunosDuvidaCount--; //aluno tirou dúvida e decremente variável de alunos com dúvida

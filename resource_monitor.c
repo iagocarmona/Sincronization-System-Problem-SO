@@ -10,6 +10,7 @@ void initMonitor()
 
     monitor.alunosSOCount=0;
     monitor.alunosDuvidaCount=0;
+    monitor.professorEstaDandoAula=FALSE;
 }
 
 void destroyMonitor()

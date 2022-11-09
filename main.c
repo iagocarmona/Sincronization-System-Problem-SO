@@ -21,24 +21,24 @@ int main()
     pthread_create(&professor, NULL, (void *)professorThread, NULL);
 
     // alunos_so
-    for(int i=0; i < NUM_ALUNOS_SO; i++) {
+    for(int i=1; i <= NUM_ALUNOS_SO; i++) {
         pthread_create(&(alunos_so[i]), NULL, (void *)alunosSOThread, (void *)(intptr_t)(i));
     }
 
     // alunos_duvida
-    for(int i=0; i < NUM_ALUNOS_DUVIDA; i++) {
+    for(int i=1; i <= NUM_ALUNOS_DUVIDA; i++) {
         pthread_create(&(alunos_duvida[i]), NULL, (void *)alunosDuvidasThread, (void *)(intptr_t)(i));
     }
 
-    // Espera as threads alunos_so acabarem
-    for (int i=0; i < NUM_ALUNOS_SO; i++) {
-        pthread_join(alunos_so[i],NULL);
-    }
+    // // Espera as threads alunos_so acabarem
+    // for (int i=1; i <= NUM_ALUNOS_SO; i++) {
+    //     pthread_join(alunos_so[i],NULL);
+    // }
 
-    // espera as threads aluno_duvida acabarem
-    for (int i=0; i < NUM_ALUNOS_DUVIDA; i++) {
-        pthread_join(alunos_duvida[i],NULL);
-    }
+    // // espera as threads aluno_duvida acabarem
+    // for (int i=1; i <= NUM_ALUNOS_DUVIDA; i++) {
+    //     pthread_join(alunos_duvida[i],NULL);
+    // }
 
     // espera o professor acabar
     pthread_join(professor, NULL);
@@ -47,4 +47,5 @@ int main()
     destroyMonitor();
 
     printf("\n");
+    return 0;
 }
