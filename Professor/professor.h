@@ -1,6 +1,6 @@
 #pragma once
 
-void *professorThread(void *ptr);
+void *professorThread();
 void prepararAula();
 void atenderAlunos();
 void darAula();

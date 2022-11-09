@@ -4,16 +4,24 @@
 
 void *alunosSOThread(void *ptr){
     int num = (intptr_t) ptr;
-    aguardarAula(num);
-    pthread_cond_wait(&fimAula, &mutex);
+
+    srand(time(NULL) + (num * 2));
+    int sleepTime = rand() % 5; 
+    sleep(sleepTime);
+
+    pthread_mutex_lock(&monitor.mutex);
+    entrarSalaAula(num);
     sairSalaAula(num);
-    //pthread_exit(0);
+    pthread_mutex_unlock(&monitor.mutex);
 }
 
 void entrarSalaAula(int num){
-    alunosSOCount++; //aluno de SO chegou, atualiza variável de quantidade de alunos na sala
+    monitor.alunosSOCount++; //aluno de SO chegou, atualiza variável de quantidade de alunos na sala
+    sleep(1);
     printf("\talunoSO_%d entra na sala\n", num);
-    if(alunosSOCount == NUM_TURMA_SO){ //verifica se último aluno chegou
+    printf("\t%d/%d Alunos em sala.\n", monitor.alunosSOCount, NUM_ALUNOS_SO);
+    if(monitor.alunosSOCount == NUM_ALUNOS_SO){ //verifica se último aluno chegou
+        printf("\tTODOS OS ALUNOS CHEGARAM!");
         chamarProfessor(num);// o último aluno chama professor para aula 
     }else{
         aguardarAula(num);
@@ -21,23 +29,26 @@ void entrarSalaAula(int num){
 }
 
 void sairSalaAula(int num){
-    printf("\talunoSO_%d sai na sala\n", num);
-    pthread_exit(0);
+    sleep(1);
+    pthread_cond_wait(&monitor.fimAula, &monitor.mutex);
+    printf("\talunoSO_%d sai da sala\n", num);
 }
 
 void aguardarAula(int num){
+    sleep(1);
     printf("\talunoSO_%d aguardando professor começar a aula\n", num);
-    pthread_cond_wait(&prDarAula, &mutex);
-    obaAulaSO(num);
+    pthread_cond_wait(&monitor.prDarAula, &monitor.mutex);
 }
 
 void obaAulaSO(int num){
-    printf("\talunoSO_%d fica feliz que vai ter aula\n", num);
+    sleep(1);
+    printf("\talunoSO_%d Oba! Aula de SO!\n", num);
 }
 
 void chamarProfessor(int num){
-    printf("\talunoSO_%d chama professor\n", num);
-    pthread_cond_signal(&alunosPresentes); //último aluno sinaliza para o professor que a aula pode começar
-    pthread_cond_wait(&prDarAula, &mutex);
+    sleep(1);
+    printf("\talunoSO_%d Avisa que chegou todos os alunos.\n", num);
+    // pthread_cond_signal(&monitor.alunosPresentes); //último aluno sinaliza para o professor que a aula pode começar
+    pthread_cond_wait(&monitor.prDarAula, &monitor.mutex);
     obaAulaSO(num);
 }
