@@ -61,6 +61,9 @@ void dispensarAlunos(){
 
 void irEmboraCasa(){
     sleep(1);
+    while(monitor.alunosSOCount != 0){
+        //espera todos os alunos ir embora
+    }
     printf("Professor indo embora pra casa...\n");
 }
 
