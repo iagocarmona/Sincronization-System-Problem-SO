@@ -16,6 +16,7 @@ void *professorThread(){
             irEmboraCasa();
         }
     }
+    
         // while(monitor.alunosSOCount < NUM_ALUNOS_SO){
         //     pthread_mutex_unlock(&monitor.mutex);
         //     prepararAula();
@@ -59,5 +60,9 @@ void dispensarAlunos(){
 
 void irEmboraCasa(){
     sleep(1);
-    printf("Professor indo embora pra casa...");
+    printf("Professor indo embora pra casa...\n");
+}
+
+void finalizarAtendimento(){
+    printf("Irei dar minha aula, encerrando atendimenti de dúvidas...");
 }
