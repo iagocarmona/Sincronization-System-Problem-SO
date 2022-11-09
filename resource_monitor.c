@@ -6,11 +6,10 @@ void initMonitor()
     pthread_cond_init(&monitor.professor, NULL); // Inicializa variáveis de condições do professor
     pthread_cond_init(&monitor.alunosSO, NULL); // Inicializa variáveis de condições dos alunos de SO
     pthread_cond_init(&monitor.alunosDuvida, NULL); // Inicializa variáveis de condições dos alunos com duvidas
-    pthread_cond_init(&monitor.prDarAula, NULL); // Inicializa variáveis de condições do professor dar aula
 
-    monitor.alunosSOCount=0;
-    monitor.alunosDuvidaCount=0;
-    monitor.professorEstaDandoAula=FALSE;
+    qtd_alunos_duvida_esperando=0;
+    qtd_alunos_tirando_duvidas=0;
+    professor_atendendo=FALSE;
 }
 
 void destroyMonitor()
@@ -19,5 +18,4 @@ void destroyMonitor()
     pthread_cond_destroy(&monitor.professor);      /* libera as variáveis de condições do professor */
     pthread_cond_destroy(&monitor.alunosSO);      /* libera as variáveis de condições dos alunos de SO */
     pthread_cond_destroy(&monitor.alunosDuvida);      /* libera as variáveis de condições dos alunos com duvidas */
-    pthread_cond_destroy(&monitor.prDarAula);      /* libera as variáveis de condições do professor dar aula*/
 }
