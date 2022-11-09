@@ -5,3 +5,4 @@ void chegarSalaProfessor();
 void aguardarProfessor();
 void tirarDuvidas();
 void sairSalaProfessor();
+void professorEstaDandoAula();
