@@ -1,3 +1,15 @@
+/**
+ * @file professor.h
+ * @author Thiago Gariani Quinto
+ * @author Iago Ortega Carmona
+ * @brief declaração das funções a serem realizadas pelo professor
+ * @version 0.5
+ * @date 2022-11-09
+ * 
+ * 
+ */
+
+
 #pragma once
 
 /**
@@ -23,7 +35,7 @@ void prepararAula();
  * que iniciará o atendimento
  * 
  */
-void atenderAlunos();
+void atenderAlunos(int grupo);
 
 
 /**

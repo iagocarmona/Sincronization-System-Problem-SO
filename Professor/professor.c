@@ -39,9 +39,11 @@ void prepararAula(){
     printf("Professor está preparando a aula!\n");
 }
 
-void atenderAlunos(){
-    printf("Estou atendendo os alunos...\n");
+void atenderAlunos(int grupo){
+    printf("Estou atendendo os alunos do grupo %d\n", grupo);
+    grupo++;
     monitor.atendimento = TRUE;
+    monitor.salaProfessorCheia = TRUE;
     pthread_cond_signal(&monitor.prAtenderAlunos);
     sleep(1);
 }
@@ -62,7 +64,7 @@ void dispensarAlunos(){
 void irEmboraCasa(){
     sleep(1);
     while(monitor.alunosSOCount != 0){
-        //espera todos os alunos ir embora
+        //espera todos os alunos saírem da sala
     }
     printf("Professor indo embora pra casa...\n");
 }

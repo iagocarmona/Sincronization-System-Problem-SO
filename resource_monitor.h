@@ -26,6 +26,9 @@ typedef struct Monitor{
     int alunosDuvidaCount; //variável que sinaliza a quantidade de alunos com dúvidas 
     int professorEstaDandoAula; // variavel que sinaliza que o professor está dando aula 
     int atendimento; //variável de sinalização que atendimento começou
+    int salaProfessorCheia;
+    int alunosDuvidasRestantes; //variável com a quantidade de alunos restantes para tirarem dúvidas
+    int grupo;
 }Monitor;
 
 struct Monitor monitor;

@@ -8,9 +8,11 @@ void initMonitor()
     pthread_cond_init(&monitor.alunosDuvida, NULL); // Inicializa variáveis de condições dos alunos com duvidas
     pthread_cond_init(&monitor.prDarAula, NULL); // Inicializa variáveis de condições do professor dar aula
 
-    monitor.alunosSOCount=0;
-    monitor.alunosDuvidaCount=0;
-    monitor.professorEstaDandoAula=FALSE;
+    monitor.alunosSOCount = 0;
+    monitor.alunosDuvidaCount = 0;
+    monitor.professorEstaDandoAula = FALSE;
+    monitor.alunosDuvidasRestantes = NUM_ALUNOS_DUVIDA;
+    monitor.grupo = 1;
 }
 
 void destroyMonitor()

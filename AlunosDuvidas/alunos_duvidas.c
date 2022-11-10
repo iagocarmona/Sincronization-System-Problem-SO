@@ -47,11 +47,13 @@ void aguardarProfessor(int num){
 
 void tirarDuvidas(int num){
     if(!monitor.professorEstaDandoAula){
-        printf("\t\talunoDuvida_%d vai tirar suas dúvidas...\n", num);
-        sleep(1); //simulação de tirar dúvidas
-        printf("\t\talunoDuvida_%d tirou suas dúvidas e vai embora\n", num);
-        sairSalaProfessor(num);
-        monitor.alunosDuvidaCount--; //aluno tirou dúvida e decremente variável de alunos com dúvida7
+        if(!monitor.salaProfessorCheia){
+            printf("\t\talunoDuvida_%d vai tirar suas dúvidas...\n", num);
+            sleep(1); //simulação de tirar dúvidas
+            printf("\t\talunoDuvida_%d tirou suas dúvidas e vai embora\n", num);
+            sairSalaProfessor(num);
+            monitor.alunosDuvidaCount--; //aluno tirou dúvida e decremente variável de alunos com dúvida
+        }
     } else{
         professorEstaDandoAula(num);
     }
