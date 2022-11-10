@@ -12,7 +12,7 @@ int main()
 {
     pthread_t professor;
     pthread_t alunos_so[NUM_ALUNOS_SO];
-    pthread_t alunos_duvida[NUM_ALUNOS_DUVIDA];
+    pthread_t alunos_duvidas[NUM_ALUNOS_DUVIDA];
 
     // Inicializa o monitor
     initMonitor();
@@ -29,9 +29,9 @@ int main()
         }
     }
 
-    // alunos_duvida
+    // alunos_duvidas
     for(int i=1; i <= NUM_ALUNOS_DUVIDA; i++) {
-        if(pthread_create(&(alunos_duvida[i]), NULL, (void *)alunosDuvidasThread, (void *)(intptr_t)(i)) !=0){
+        if(pthread_create(&(alunos_duvidas[i]), NULL, (void *)alunosDuvidasThread, (void *)(intptr_t)(i)) !=0){
             printf("\nERROR: Falha na criação da thread dos alunos com dúvidas.");
         }
     }
