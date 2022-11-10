@@ -53,14 +53,18 @@ void darAula(){
     sem_wait(&semaforo.alunosPresentes); //espera pela sinalização de que todos os alunos chegaram
     semaforo.professorEstaDandoAula = TRUE; //avisa que está dando aula para os alunos com dúvida
     printf("Vou dar aula!\n");
-    sem_post(&semaforo.profDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
+    for(int i = 1; i <= NUM_ALUNOS_SO; i++){
+        sem_post(&semaforo.profDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
+    }
     sleep(5); //simulação de dando aula
     dispensarAlunos();
 }
 
 void dispensarAlunos(){
     printf("Aula acabou, dispensando alunos...\n");
-    sem_post(&semaforo.fimAula); //sinaliza para todos os alunos de SO que a aula acabou
+    for(int i = 1; i <= NUM_ALUNOS_SO; i++){
+        sem_post(&semaforo.fimAula); //sinaliza para os alunos de SO que a aula acabou
+    }
 }
 
 void irEmboraCasa(){
