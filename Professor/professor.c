@@ -3,15 +3,12 @@
 #include "../resource_monitor.h"
 
 void *professorThread(){
-    pthread_mutex_lock(&monitor.mutex);
     while(monitor.alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){
-        pthread_mutex_unlock(&monitor.mutex);
         prepararAula();
-        pthread_mutex_lock(&monitor.mutex);
+
         if(monitor.alunosSOCount == NUM_ALUNOS_SO){
-            pthread_mutex_unlock(&monitor.mutex);
             darAula();
-            pthread_mutex_lock(&monitor.mutex);
+    
             dispensarAlunos();
             irEmboraCasa();
         }
@@ -26,11 +23,7 @@ void *professorThread(){
         //         pthread_mutex_lock(&monitor.mutex);
         //     }
         // }
-        printf("entrei aq");
-    pthread_mutex_unlock(&monitor.mutex);
     atenderAlunos();
-    pthread_mutex_lock(&monitor.mutex);
-    pthread_mutex_unlock(&monitor.mutex);
 }
 
 void prepararAula(){
@@ -40,21 +33,21 @@ void prepararAula(){
 
 void atenderAlunos(){
     printf("Estou atendendo os alunos...\n");
-    pthread_cond_signal(&monitor.prAtenderAlunos);
+    sem_post(&semaforo.profAtenderAlunos);
     sleep(1);
 }
 
 void darAula(){
-    pthread_cond_wait(&monitor.alunosPresentes, &monitor.mutex); //espera pela sinalização de que todos os alunos chegaram
-    monitor.professorEstaDandoAula = TRUE;
+    sem_wait(&semaforo.alunosPresentes); //espera pela sinalização de que todos os alunos chegaram
+    semaforo.professorEstaDandoAula = TRUE;
     printf("Vou dar aula!\n");
-    pthread_cond_signal(&monitor.prDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
+    sem_post(&semaforo.profDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
     sleep(5);
 }
 
 void dispensarAlunos(){
     printf("Aula acabou, dispensando alunos...\n");
-    pthread_cond_signal(&monitor.fimAula); //sinaliza para todos os alunos de SO que a aula acabou
+    sem_post(&semaforo.fimAula); //sinaliza para todos os alunos de SO que a aula acabou
 }
 
 void irEmboraCasa(){
