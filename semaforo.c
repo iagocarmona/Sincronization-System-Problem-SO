@@ -1,4 +1,4 @@
-#include "resource_semaforo.h"
+#include "semaforo.h"
 
 void initSemaforo()
 {

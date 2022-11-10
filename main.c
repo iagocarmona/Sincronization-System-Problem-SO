@@ -6,7 +6,7 @@
 #include "AlunosSO/alunos_so.h"
 #include "AlunosDuvidas/alunos_duvidas.h"
 
-#include "resource_semaforo.h"
+#include "semaforo.h"
 
 int main()
 {

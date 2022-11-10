@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "professor.h"
-#include "../resource_semaforo.h"
+#include "../semaforo.h"
 
 void *professorThread(){
     while(semaforo.alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){//não preencheu grupo de dúvidas
@@ -42,7 +42,7 @@ void atenderAlunos(){
     }
     //caso o motivo de saída do laço seja que todos os alunos chegaram, o professor vai dar aula, 
     //caso esse não seja o motivo, ele volta a preparar a aula
-    if(semafor.alunosSOCount == NUM_ALUNOS_SO){
+    if(semaforo.alunosSOCount == NUM_ALUNOS_SO){
         darAula();
     } else{
         prepararAula();

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "alunos_duvidas.h"
-#include "../resource_semaforo.h"
+#include "../semaforo.h"
 
 void *alunosDuvidasThread(void *ptr){
     int num = (intptr_t) ptr;
@@ -36,7 +36,7 @@ void aguardarProfessor(int num){
         sem_wait(&semaforo.profAtenderAlunos); //espera pela sinalização do professor para tirar suas dúvidas
         tirarDuvidas(num);
     } else{
-        professorDandoAula(int num);
+        professorDandoAula(num);
     }
 }
 

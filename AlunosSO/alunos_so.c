@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "alunos_so.h"
-#include "../resource_semaforo.h"
+#include "../semaforo.h"
 
 void *alunosSOThread(void *ptr){
     int num = (intptr_t) ptr;

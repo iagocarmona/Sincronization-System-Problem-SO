@@ -24,7 +24,7 @@ typedef struct Semaforo{
     int alunosSOCount, //variável que sinaliza o número de alunos de SO presentes na sala
         alunosDuvidaCount, //variável que sinaliza a quantidade de alunos com dúvidas 
         professorEstaDandoAula, // variavel que sinaliza que o professor está dando aula 
-        alunosDuvidaRestente, //variável de controle de quantos alunso ainda faltam para tirar dúvidas
+        alunosDuvidaRestante, //variável de controle de quantos alunso ainda faltam para tirar dúvidas
         salaAtend,
         grupoAend; //variável de indicação do grupo que está sendo atendidfo
     
