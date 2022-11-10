@@ -21,6 +21,7 @@ void *professorThread(){
         //         pthread_mutex_lock(&monitor.mutex);
         //     }
         // }
+        
     atenderAlunos(); //começa atendimento dos alunos com dúvida
 }
 
