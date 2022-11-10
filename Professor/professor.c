@@ -3,12 +3,10 @@
 #include "../resource_monitor.h"
 
 void *professorThread(){
-    while(monitor.alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){
+    while(monitor.alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){//não preencheu grupo de dúvidas
         prepararAula();
-
-        if(monitor.alunosSOCount == NUM_ALUNOS_SO){
-            darAula();
-    
+        if(monitor.alunosSOCount == NUM_ALUNOS_SO){ //todos os alunos estão na sala
+            darAula();   
             dispensarAlunos();
             irEmboraCasa();
         }
@@ -23,7 +21,7 @@ void *professorThread(){
         //         pthread_mutex_lock(&monitor.mutex);
         //     }
         // }
-    atenderAlunos();
+    atenderAlunos(); //começa atendimento dos alunos com dúvida
 }
 
 void prepararAula(){

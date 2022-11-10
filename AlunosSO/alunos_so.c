@@ -22,20 +22,22 @@ void entrarSalaAula(int num){
         printf("\tTODOS OS ALUNOS CHEGARAM!");
         chamarProfessor(num);// o último aluno chama professor para aula 
     }else{
+        // se não for o último alunos, ele aguarda na sala
         aguardarAula(num);
     }
 }
 
 void sairSalaAula(int num){
     sleep(1);
-    sem_wait(&semaforo.fimAula, &semaforo.mutex);
+    sem_wait(&semaforo.fimAula); //espera pela sinalização de fim da aula para poder ir embora
     printf("\talunoSO_%d sai da sala\n", num);
 }
 
 void aguardarAula(int num){
     sleep(1);
     printf("\talunoSO_%d aguardando professor começar a aula\n", num);
-    sem_wait(&semaforo.prDarAula, &semaforo.mutex);
+    sem_wait(&semaforo.profDarAula,); //espera pelo início da aula
+    obaAulaSO(num); 
 }
 
 void obaAulaSO(int num){
@@ -46,7 +48,7 @@ void obaAulaSO(int num){
 void chamarProfessor(int num){
     sleep(1);
     printf("\talunoSO_%d Avisa que chegou todos os alunos.\n", num);
-    // pthread_cond_signal(&semaforo.alunosPresentes); //último aluno sinaliza para o professor que a aula pode começar
+    sem_post(&semaforo.alunosPresentes); //último aluno sinaliza para o professor que a aula pode começar
     sem_wait(&semaforo.prDarAula);
     obaAulaSO(num);
 }

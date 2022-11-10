@@ -15,7 +15,7 @@
 typedef struct Semaforo{
     /* --- controles de concorrência --- */
     sem_t mutex,
-    alunosDuvida,
+    alunosDuvida, // para controlec de grupo de dúvidas
     fimAula, //sinalização de que a aula acabou 
     alunosPresentes, //sinalização se todos os alunos de SO chegaram na sala
     profDarAula, //sinalização de início da aula
@@ -31,6 +31,5 @@ struct Semaforo semaforo;
 struct timespec t;
 time_t Time;
 
-/* --- semaforo operations --- */
-void initSemaforo();
+void initSemaforo(); //inicializa os valores do semáforo
 

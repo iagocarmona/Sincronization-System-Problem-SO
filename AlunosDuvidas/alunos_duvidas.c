@@ -10,10 +10,8 @@ void *alunosDuvidasThread(void *ptr){
     sleep(sleepTime);
 
    
-    if(!semaforo.professorEstaDandoAula){
+    if(!semaforo.professorEstaDandoAula){ //se o professor não está dando aula, vai tirar sua dúvida
         chegarSalaProfessor(num);
-        aguardarProfessor(num);
-        tirarDuvidas(num);
     }else{
         printf("\t\tProfessor está dando aula! AlunoDuvida_%d indo embora.", num);
         pthread_exit(0);
@@ -32,6 +30,7 @@ void chegarSalaProfessor(int num){
 void aguardarProfessor(int num){
     sleep(1);
     printf("\t\talunoDuvida_%d está aguardando atendimento do professor.\n", num);
+    sem_wait(&alunosDuvida); //verifica se o grupo de dúvidas está completo ou não
     sem_wait(&semaforo.prAtenderAlunos); //espera pela sinalização do professor para tirar suas dúvidas
     tirarDuvidas(num);
 }
