@@ -26,13 +26,27 @@ void *professorThread(){
 
 void prepararAula(){
     sleep(1);
-    printf("Professor está preparando a aula!\n");
+    while(semaforo.alunosSOCount < NUM_ALUNOS_SO){
+        printf("Professor está preparando a aula!\n");
+    }
+    darAula();
+    dispensarAlunos();
+    irEmboraCasa();
 }
 
 void atenderAlunos(){
-    printf("Estou atendendo os alunos...\n");
-    sem_post(&semaforo.profAtenderAlunos); //sinaliza começo de atendimento
-    sleep(1);
+    while(semaforo.alunosSOCount < NUM_ALUNOS_SO && semaforo.alunosDuvidaRestante >= NUM_GRUPO_ATENDE_ALUNOS){
+        printf("Estou atendendo os alunos...\n");
+        sem_post(&semaforo.profAtenderAlunos); //sinaliza começo de atendimento
+        sleep(1);
+    }
+    //caso o motivo de saída do laço seja que todos os alunos chegaram, o professor vai dar aula, 
+    //caso esse não seja o motivo, ele volta a preparar a aula
+    if(semafor.alunosSOCount == NUM_ALUNOS_SO){
+        darAula();
+    } else{
+        prepararAula();
+    }
 }
 
 void darAula(){
@@ -40,7 +54,8 @@ void darAula(){
     semaforo.professorEstaDandoAula = TRUE; //avisa que está dando aula para os alunos com dúvida
     printf("Vou dar aula!\n");
     sem_post(&semaforo.profDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
-    sleep(5);
+    sleep(5); //simulação de dando aula
+    dispensarAlunos();
 }
 
 void dispensarAlunos(){
@@ -50,5 +65,9 @@ void dispensarAlunos(){
 
 void irEmboraCasa(){
     sleep(1);
+    while(semaforo.alunosSOCount != 0){
+        printf("Professor está esperando todos os alunos saírem da sala\n");
+    }
+    printf("Último aluno foi embora!\n");
     printf("Professor indo embora pra casa...");
 }

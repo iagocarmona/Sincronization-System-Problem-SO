@@ -31,18 +31,26 @@ void chegarSalaProfessor(int num){
 
 void aguardarProfessor(int num){
     sleep(1);
-    printf("\t\talunoDuvida_%d está aguardando atendimento do professor.\n", num);
-    sem_wait(&semaforo.alunosDuvida); //verifica se o grupo de dúvidas está completo ou não
-    sem_wait(&semaforo.profAtenderAlunos); //espera pela sinalização do professor para tirar suas dúvidas
-    tirarDuvidas(num);
+    if(!semaforo.professorEstaDandoAula){
+        printf("\t\talunoDuvida_%d está aguardando atendimento do professor.\n", num);
+        sem_wait(&semaforo.profAtenderAlunos); //espera pela sinalização do professor para tirar suas dúvidas
+        tirarDuvidas(num);
+    } else{
+        professorDandoAula(int num);
+    }
 }
 
 void tirarDuvidas(int num){
-    printf("\t\talunoDuvida_%d vai tirar suas dúvidas...\n", num);
-    sleep(1); //simulação de tirar dúvidas
-    printf("\t\talunoDuvida_%d tirou suas dúvidas e vai embora\n", num);
-    sairSalaProfessor();
-    semaforo.alunosDuvidaCount--; //aluno tirou dúvida e decremente variável de alunos com dúvida
+    if(!semaforo.professorEstaDandoAula){
+        printf("\t\talunoDuvida_%d vai tirar suas dúvidas...\n", num);
+        sleep(1); //simulação de tirar dúvidas
+        printf("\t\talunoDuvida_%d tirou suas dúvidas e vai embora\n", num);
+        sairSalaProfessor();
+        semaforo.alunosDuvidaRestante--;
+        semaforo.alunosDuvidaCount--; //aluno tirou dúvida e decremente variável de alunos com dúvida
+    } else{
+        professorDandoAula(num);
+    }
 }
 
 void sairSalaProfessor(int num){
