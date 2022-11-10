@@ -6,7 +6,7 @@
 #include "AlunosSO/alunos_so.h"
 #include "AlunosDuvidas/alunos_duvidas.h"
 
-#include "resource_monitor.h"
+#include "resource_semaforo.h"
 
 int main()
 {
@@ -15,7 +15,7 @@ int main()
     pthread_t alunos_duvida[NUM_ALUNOS_DUVIDA];
 
     // Inicializa o monitor
-    initMonitor();
+    initSemaforo();
 
     // professor
     pthread_create(&professor, NULL, (void *)professorThread, NULL);
@@ -44,7 +44,6 @@ int main()
     pthread_join(professor, NULL);
 
     // Destroi o monitor
-    destroyMonitor();
 
     printf("\n");
     return 0;

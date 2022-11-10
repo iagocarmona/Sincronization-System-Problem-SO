@@ -36,7 +36,7 @@ void sairSalaAula(int num){
 void aguardarAula(int num){
     sleep(1);
     printf("\talunoSO_%d aguardando professor começar a aula\n", num);
-    sem_wait(&semaforo.profDarAula,); //espera pelo início da aula
+    sem_wait(&semaforo.profDarAula); //espera pelo início da aula
     obaAulaSO(num); 
 }
 
@@ -49,6 +49,6 @@ void chamarProfessor(int num){
     sleep(1);
     printf("\talunoSO_%d Avisa que chegou todos os alunos.\n", num);
     sem_post(&semaforo.alunosPresentes); //último aluno sinaliza para o professor que a aula pode começar
-    sem_wait(&semaforo.prDarAula);
+    sem_wait(&semaforo.profDarAula);
     obaAulaSO(num);
 }

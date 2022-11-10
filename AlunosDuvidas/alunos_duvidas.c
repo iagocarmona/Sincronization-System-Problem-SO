@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "alunos_duvidas.h"
-#include "../resource_monitor.h"
+#include "../resource_semaforo.h"
 
 void *alunosDuvidasThread(void *ptr){
     int num = (intptr_t) ptr;
@@ -30,8 +30,8 @@ void chegarSalaProfessor(int num){
 void aguardarProfessor(int num){
     sleep(1);
     printf("\t\talunoDuvida_%d está aguardando atendimento do professor.\n", num);
-    sem_wait(&alunosDuvida); //verifica se o grupo de dúvidas está completo ou não
-    sem_wait(&semaforo.prAtenderAlunos); //espera pela sinalização do professor para tirar suas dúvidas
+    sem_wait(&semaforo.alunosDuvida); //verifica se o grupo de dúvidas está completo ou não
+    sem_wait(&semaforo.profAtenderAlunos); //espera pela sinalização do professor para tirar suas dúvidas
     tirarDuvidas(num);
 }
 

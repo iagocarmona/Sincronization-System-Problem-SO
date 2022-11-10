@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include "professor.h"
-#include "../resource_monitor.h"
+#include "../resource_semaforo.h"
 
 void *professorThread(){
-    while(monitor.alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){//não preencheu grupo de dúvidas
+    while(semaforo.alunosDuvidaCount < NUM_GRUPO_ATENDE_ALUNOS){//não preencheu grupo de dúvidas
         prepararAula();
-        if(monitor.alunosSOCount == NUM_ALUNOS_SO){ //todos os alunos estão na sala
+        if(semaforo.alunosSOCount == NUM_ALUNOS_SO){ //todos os alunos estão na sala
             darAula();   
             dispensarAlunos();
             irEmboraCasa();
@@ -31,13 +31,13 @@ void prepararAula(){
 
 void atenderAlunos(){
     printf("Estou atendendo os alunos...\n");
-    sem_post(&semaforo.profAtenderAlunos);
+    sem_post(&semaforo.profAtenderAlunos); //sinaliza começo de atendimento
     sleep(1);
 }
 
 void darAula(){
     sem_wait(&semaforo.alunosPresentes); //espera pela sinalização de que todos os alunos chegaram
-    semaforo.professorEstaDandoAula = TRUE;
+    semaforo.professorEstaDandoAula = TRUE; //avisa que está dando aula para os alunos com dúvida
     printf("Vou dar aula!\n");
     sem_post(&semaforo.profDarAula); //sinaliza para todos os alunos de SO que a aula vai começar
     sleep(5);
