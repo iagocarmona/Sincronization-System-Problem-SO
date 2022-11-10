@@ -11,4 +11,5 @@ void initSemaforo()
     semaforo.alunosSOCount = 0; //variável de contagem dos alunos de SO na sal
     semaforo.alunosDuvidaCount =0; //variável de contagem dos alunos com dúvida
     semaforo.professorEstaDandoAula = FALSE; //variável de verificação se o professor está dando aula ou não
+    semaforo.salaAtend = FALSE;
 }

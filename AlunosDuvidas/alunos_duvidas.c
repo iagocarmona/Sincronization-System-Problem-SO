@@ -8,23 +8,25 @@ void *alunosDuvidasThread(void *ptr){
     srand(time(NULL) + (num * 2));
     int sleepTime = rand() % 5; 
     sleep(sleepTime);
-
-   
+ 
     if(!semaforo.professorEstaDandoAula){ //se o professor não está dando aula, vai tirar sua dúvida
         chegarSalaProfessor(num);
     }else{
-        printf("\t\tProfessor está dando aula! AlunoDuvida_%d indo embora.", num);
-        pthread_exit(0);
+        professorDandoAula(num);
     }
     
 }
 
 void chegarSalaProfessor(int num){
     sleep(1);
-    printf("\t\talunoDuvida_%d chegou na porta do professor\n", num);
-    semaforo.alunosDuvidaCount++; //novo aluno quer tirar dúvidas - incrementa variável que sinaliza a quantidade de alunos com dúvidas
-    printf("\t\t%d/%d AlunosDuvida esperando atendimento.\n", semaforo.alunosDuvidaCount, NUM_GRUPO_ATENDE_ALUNOS);
-    aguardarProfessor(num);
+    if(!semaforo.professorEstaDandoAula){
+        printf("\t\talunoDuvida_%d chegou na porta do professor\n", num);
+        semaforo.alunosDuvidaCount++; //novo aluno quer tirar dúvidas - incrementa variável que sinaliza a quantidade de alunos com dúvidas
+        printf("\t\t%d/%d AlunosDuvida esperando atendimento.\n", semaforo.alunosDuvidaCount, NUM_GRUPO_ATENDE_ALUNOS);
+        aguardarProfessor(num);
+    } else{
+        professorDandoAula(num);
+    }
 }
 
 void aguardarProfessor(int num){
@@ -46,4 +48,9 @@ void tirarDuvidas(int num){
 void sairSalaProfessor(int num){
     sleep(1);
     printf("\t\talunoDuvida_%d saiu da sala do professor\n", num);
+}
+
+void professorDandoAula(int num){
+    printf("\t\tProfessor está dando aula! AlunoDuvida_%d indo embora.", num);
+    pthread_exit(0);
 }
