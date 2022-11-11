@@ -39,7 +39,8 @@ int quant_alunos_esperando_corredor = 0;
 int duvidas = 0;
 int sala_Aula_SO = 0;
 int i;
-
+int alunosDuvidas = 0;
+int alunosSO = 0;
 
 // Instancias de funcoes
 void *professor(void *arg);
@@ -52,32 +53,44 @@ void *professor(void *arg){
     //Preparar Aula
 
         printf("O professor Campiolo esta preparando atividades em sua sala... \n"); 
+        alunosDuvidas = 1;
+        alunosSO = 1;
         sem_wait(&sem_notifica); //espera por uma ação que faz parar o ato de preparar a aula
-
-       
-        if(quant_alunos_duvida == N_GRUPOS_DUVIDA && quant_alunos_esperando_sala != N_ALUNOS_SO ){
-           printf("Professor atedendo alunos duvida\n");
-        }
 
     if(cont==0){
         cont++;
         sem_post(&sem_prof_livre); //mostra que esta disponivel
     }
 
+    //verifica se o que o interrompeu foi a chegada dos alunos_duvidas ou a chegadas dos alunos_so
+    //caso foi a dos alunos_duvida, entra no if, caso não foi, ele dará aula
+    if(quant_alunos_duvida == N_GRUPOS_DUVIDA && quant_alunos_esperando_sala != N_ALUNOS_SO ){
 
-    sem_wait(&sem_sala_lotada);
+        while(quant_alunos_sala != N_ALUNOS_SO){ //enquanto todos os alunos de SO não estiverem na sala
+            if(quant_alunos_duvida == N_GRUPOS_DUVIDA){ //se o grupo de dúvidas está cheio, atende o grupo
+                printf("Professor atendendo alunos duvida\n");
+                sem_wait(&sem_corredor_vazio);
+            }
+        }
+
+        sala_Aula_SO = 1;
+    
+    }
+
+
+    sem_wait(&sem_sala_lotada); //espera a sinalização do último alunos de que todos estão na sala
         printf("O professor vai dar aula.\n\n");
         sleep(1);
 
     for(int i = 1; i <= N_ALUNOS_SO; i++){
-        sem_post(&sem_dar_aula);
+        sem_post(&sem_dar_aula); //sinaliza para cada aluno que a aula vai começar
     }
     
-        sleep(5);
+        sleep(5); //simulação da aula
 
         printf("\nA aula acabou!\n\n");
         for(int i = 1; i <= N_ALUNOS_SO; i++){
-            sem_post(&sem_dispensar_aluno);
+            sem_post(&sem_dispensar_aluno); //sinaliza para todos os alunos que a aula acabou
         }
        
         sleep(2);
@@ -90,6 +103,8 @@ void *professor(void *arg){
 
 void *aluno_so(void *arg){
     int id = *(int*)arg;
+
+    while(!alunosSO){}
 
     // chegada aleatória
     srand(time(NULL) + (id * 2));
@@ -105,24 +120,24 @@ void *aluno_so(void *arg){
     printf("\tAlunoSO %d/%d estão na sala\n", quant_alunos_sala, N_ALUNOS_SO);
 
     if(quant_alunos_sala == N_ALUNOS_SO){
-        sem_post(&sem_notifica);
+        sem_post(&sem_notifica); //notifica professor da chegada de todos os alunos
 
         printf("\n\tA SALA ESTA CHEIA!\n\n");  
         sala_Aula_SO = 1;   
-        sem_wait(&sem_prof_livre);
-        sem_post(&sem_sala_lotada);
+        sem_wait(&sem_prof_livre); //espera professor estar livre
+        sem_post(&sem_sala_lotada); //sinaliza que todos os alunos estão na sala
         printf("\tO Aluno_SO_%d foi chamar o professor.\n\n", id);
     }
 
-    sem_wait(&sem_dar_aula);
+    sem_wait(&sem_dar_aula); //espera pela sinalização do professor de que a aula vai começar
         printf("\tOba aula de SO! %d\n", id);
    
-    sem_wait(&sem_dispensar_aluno);
+    sem_wait(&sem_dispensar_aluno); //espera pela sinalização do professor de que a aula acabou
         printf("\tAluno %d saiu da sala!\n", id);
         quant_alunos_sala--;
-    if(quant_alunos_sala == 0){
+    if(quant_alunos_sala == 0){ //todos os alunos foram embora
         printf("\n\tSALA VAZIA!!!\n\n");
-        sem_post(&sem_sala_vazia);
+        sem_post(&sem_sala_vazia); //sinaliza para o professor que todos os alunos foram embora
     } 
     //sleep(1);
     return NULL;
@@ -130,7 +145,10 @@ void *aluno_so(void *arg){
 
 void *aluno_duvida(void *arg){
     int id = *(int*)arg;
+    
+    while(!alunosDuvidas){}
 
+    //chegada aleatória
     srand(time(NULL) + (id * 2));
     int sleepTime = rand() % 5; 
     sleep(sleepTime);
@@ -146,16 +164,23 @@ void *aluno_duvida(void *arg){
     printf("\t\tAlunoDuvida %d/%d\n", quant_alunos_esperando_corredor, N_GRUPOS_DUVIDA);
 
 
+    if(sala_Aula_SO){
+        printf("\t\tProfessor está dando aula, aluno-Duvida_%d vai embora\n", id);
+        pthread_exit(0);
+    }
 
-    if(quant_alunos_duvida == N_GRUPOS_DUVIDA){
-        sem_post(&sem_notifica);
+    if(quant_alunos_duvida == N_GRUPOS_DUVIDA){ //o grupo está cheio
+        sem_post(&sem_notifica); //sinaliza para o professor que há um grupo de dúvidas
         printf("\t\tO grupo de duvidas lotou!\n");
-        sem_wait(&sem_prof_livre);
+
+        sem_wait(&sem_prof_livre); //espera pela disponibilidade do professor
 
         // if(quant_alunos_esperando_sala < N_ALUNOS_SO){
         //     printf("\t\tO professor esta atendendo as duvidas no corredor\n\n");
         //     sem_post(&sem_atender_aluno);
         // }
+        sleep(1);
+
         for (i = 1; i <= N_GRUPOS_DUVIDA; i++){
                 sem_post(&sem_atender_aluno);
             }
