@@ -11,47 +11,40 @@
 void *alunosDuvidasThread(void *ptr){
     int id = (intptr_t) ptr;
 
+    sleep(3);
     srand(time(NULL) + (id * 2));
     int sleepTime = rand() % 5; 
     sleep(sleepTime);
 
     pthread_mutex_lock(&monitor.mutex); 
 
-    if(!monitor.professor_dando_aula && !monitor.professor_atendendo){
-        printf("\n\t\t🙋‍♂‍‍\b | alunoDuvida_%d chegou na porta do professor\n", id);
-        monitor.qtd_alunos_duvida_esperando++;
-        pthread_cond_wait(&monito.aluno_fila_duvida, &monitor.mutex);
-    }else if(){
-        
-    }
+    printf("\n\t\t🙋‍♂‍‍\b | alunoDuvida_%d chegou na porta do professor\n", id);
+    monitor.qtd_alunos_duvida_esperando++;
+    printf("\t\t🙋‍♂‍‍\b | %d/%d Alunos com duvida na fila\n", monitor.qtd_alunos_duvida_esperando, monitor.max_atendimento_professor);
+    sleep(1);
 
     if(monitor.professor_atendendo){
         printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d está aguardando atendimento do professor.\n", id);
+        sleep(1);
     }
 
-    printf("\n\t\t🙋‍♂‍‍\b | Professor ocupado! alunoDuvida_%d vai embora\n", id);
+    if(monitor.qtd_alunos_duvida_esperando == monitor.max_atendimento_professor){
+        pthread_cond_signal(&monitor.professor);
+    }
+    
+    pthread_cond_wait(&monitor.professor_atender, &monitor.mutex);
+    printf("\n\t\t🙋‍♂‍‍\b | alunoDuvida_%d vai tirar suas dúvidas...\n", id);
+    monitor.qtd_alunos_duvida_esperando--;
+    printf("\t\t🙋‍♂‍‍\b | %d/%d Alunos com duvida na fila\n", monitor.qtd_alunos_duvida_esperando, monitor.max_atendimento_professor);
+
+    pthread_cond_wait(&monitor.professor_acabou_o_atendimento, &monitor.mutex);
+    monitor.qtd_alunos_duvida_atendendo--;
+    printf("\n\t\t🙋‍♂‍‍\b | alunoDuvida_%d saiu da sala do professor\n\n", id);
+   
+    monitor.professor_atendendo = FALSE;
+
     pthread_mutex_unlock(&monitor.mutex);
-    pthread_exit(0);
-}
-
-// void chegarSalaProfessor(int id){
-//     printf("\n\t\t🙋‍♂‍‍\b | alunoDuvida_%d chegou na porta do professor\n", id);
-//     sleep(1);
-// }
-
-// void aguardarProfessor(int id){
-//     printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d está aguardando atendimento do professor.\n", id);
-//     sleep(1);
-// }
-
-void tirarDuvidas(int id){
-    printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d vai tirar suas dúvidas...\n", id);
-    sleep(1);
-}
-
-void sairSalaProfessor(int id){
-    printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d saiu da sala do professor\n", id);
-    sleep(1);
+    pthread_exit(NULL);
 }
 
 /* **************************************************************** */
@@ -62,42 +55,47 @@ void *alunosSOThread(void *ptr){
     int id = (intptr_t) ptr;
 
     srand(time(NULL) + (id * 2));
-    int sleepTime = rand() % 8; 
+    int sleepTime = rand() % 5; 
     sleep(sleepTime);
 
     pthread_mutex_lock(&monitor.mutex);
 
-    if(monitor.professor_dando_aula == FALSE){
-        printf("\n\t👨‍💻 | alunoSO_%d entra na sala\n", id);
-        monitor.qtd_alunos_so_na_sala++;
+    printf("\n\t👨‍💻 | alunoSO_%d entra na sala\n", id);
+    monitor.qtd_alunos_so_na_sala++;
+    printf("\t👨‍💻 | alunoSO_%d aguardando professor começar a aula\n", id);
+    printf("\t👨‍💻 | %d/%d Alunos em sala\n", monitor.qtd_alunos_so_na_sala, monitor.max_alunos_so);
+    sleep(1);
+
+    if(monitor.qtd_alunos_so_na_sala == monitor.max_alunos_so){
+        printf("\n\t👨‍💻 | alunoSO_%d sou o ultimo aluno! vou avisar o professor!\n", id);
+        if(monitor.professor_atendendo){
+            printf("\n\t👨‍💻 | Aguardando atendimento dos alunos com dúvidas\n");
+            time(&T);
+            t.tv_sec = T + 5;
+            t.tv_nsec = 0;
+            pthread_cond_timedwait(&monitor.alunos_so, &monitor.mutex, &t);
+        }
+        pthread_cond_signal(&monitor.professor);
+    }
+
+    pthread_cond_wait(&monitor.professor_dar_aula, &monitor.mutex);
+    printf("\t👨‍💻 | alunoSO_%d Oba! Aula de SO!\n", id);
+
+    pthread_cond_wait(&monitor.professor_acabou_a_aula, &monitor.mutex);
+
+    printf("\n\t👨‍💻 | alunoSO_%d sai da sala\n", id);
+    monitor.qtd_alunos_so_na_sala--;
+    printf("\t👨‍💻 | %d/%d Alunos em sala\n", monitor.qtd_alunos_so_na_sala, monitor.max_alunos_so);
+    sleep(1);
+
+    if(monitor.qtd_alunos_so_na_sala == 0){
+        printf("\n\t👨‍💻 | Saíram todos os alunos da sala!\n");
+       
+        pthread_cond_signal(&monitor.alunos_sairam_da_sala);
     }
 
     pthread_mutex_unlock(&monitor.mutex);
-    pthread_exit(0);
-}
-
-void entrarSalaAula(int id){
-    printf("\n\t👨‍💻 | alunoSO_%d entra na sala\n", id);
-    sleep(1);
-}
-
-void sairSalaAula(int id){
-    printf("\t👨‍💻 | alunoSO_%d sai da sala\n", id);
-    sleep(1);
-}
-
-void aguardarAula(int id){
-    printf("\t👨‍💻 | alunoSO_%d aguardando professor começar a aula\n", id);
-    sleep(1);
-}
-
-void obaAulaSO(int id){
-    printf("\t👨‍💻 | alunoSO_%d Oba! Aula de SO!\n", id);
-}
-
-void chamarProfessor(int id){
-    printf("\n\t👨‍💻 | alunoSO_%d Avisa que chegou todos os alunos.\n", id);
-    sleep(1);
+    pthread_exit(NULL);
 }
 
 /* **************************************************************** */
@@ -107,44 +105,48 @@ void chamarProfessor(int id){
 void *professorThread(){
     pthread_mutex_lock(&monitor.mutex);
 
-    while(monitor.qtd_alunos_so_na_sala < monitor.max_alunos_so){
-        if(monitor.qtd_alunos_duvida_esperando == monitor.max_atendimento_professor){
-            printf("\n👨‍🏫 | Vou atender os alunos...\n");
-            sleep(1);
-        }
-        printf("\n👨‍🏫 | Professor está preparando a aula!\n");
-        sleep(1);
+    printf("\n👨‍🏫 | Professor está preparando a aula!\n");
+
+    inicio:
+    pthread_cond_wait(&monitor.professor, &monitor.mutex);
+
+    if(monitor.qtd_alunos_duvida_esperando == monitor.max_atendimento_professor){
+        printf("\n👨‍🏫 | Vou atender os alunos...\n");
+        monitor.professor_atendendo = TRUE;
+        pthread_cond_broadcast(&monitor.professor_atender);
+
+        time(&T);
+        t.tv_sec = T + 5;
+        t.tv_nsec = 0;
+        pthread_cond_timedwait(&monitor.professor, &monitor.mutex, &t);
+
+        printf("\n👨‍🏫 | Atendimento finalizado, dispensando alunos...\n\n");
+        pthread_cond_broadcast(&monitor.professor_acabou_o_atendimento);
+
+        // pthread_cond_wait(&monitor.alunos_duvida_sairam, &monitor.mutex);
+        goto inicio;
     }
-    printf("👨‍🏫 | Vou dar aula!\n");
+
+    if(monitor.qtd_alunos_so_na_sala == monitor.max_alunos_so){
+        printf("\n👨‍🏫 | Vou dar aula!\n\n");
+        pthread_cond_broadcast(&monitor.professor_dar_aula);
+    }
+
+    time(&T);
+    t.tv_sec = T + 5;
+    t.tv_nsec = 0;
+    pthread_cond_timedwait(&monitor.professor, &monitor.mutex, &t);
+    
+    printf("\n👨‍🏫 | Aula acabou, dispensando alunos...\n\n");
+    pthread_cond_broadcast(&monitor.professor_acabou_a_aula);
+
+    pthread_cond_wait(&monitor.alunos_sairam_da_sala, &monitor.mutex);
+
     sleep(1);
+    printf("\n👨‍🏫 | Professor indo embora pra casa...\n");
 
     pthread_mutex_unlock(&monitor.mutex);
-    pthread_exit(0);
-}
-
-void prepararAula(){
-    printf("\n👨‍🏫 | Professor está preparando a aula!\n");
-    sleep(1);
-}
-
-void atenderAlunos(){
-    printf("\n👨‍🏫 | Vou atender os alunos...\n");
-    sleep(1);
-}
-
-void darAula(){
-    printf("👨‍🏫 | Vou dar aula!\n");
-    sleep(1);
-}
-
-void dispensarAlunos(){
-    printf("👨‍🏫 | Aula acabou, dispensando alunos...\n");
-    sleep(1);
-}
-
-void irEmboraCasa(){
-    printf("👨‍🏫 | Professor indo embora pra casa...\n");
-    sleep(1);
+    pthread_exit(NULL);
 }
 
 int main()
@@ -173,6 +175,14 @@ int main()
         if(pthread_create(&(alunos_duvidas[i]), NULL, (void *)alunosDuvidasThread, (void *)(intptr_t)(i)) !=0){
             printf("\nERROR: Falha na criação da thread dos alunos com dúvidas.");
         }
+    }
+
+    for(int i=1; i <= NUM_ALUNOS_SO; i++) {
+        pthread_join(alunos_so[i], NULL);
+    }
+
+    for(int i=1; i <= NUM_ALUNOS_DUVIDA; i++) {
+        pthread_join(alunos_duvidas[i], NULL);
     }
 
     // espera o professor acabar

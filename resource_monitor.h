@@ -24,6 +24,10 @@ typedef struct Monitor{
     pthread_cond_t aluno_fila_so;
     pthread_cond_t professor_acabou_a_aula;
     pthread_cond_t alunos_sairam_da_sala;
+    pthread_cond_t professor_dar_aula;
+    pthread_cond_t professor_atender;
+    pthread_cond_t professor_acabou_o_atendimento;
+    pthread_cond_t alunos_duvida_sairam;
 
 
     int qtd_alunos_duvida_esperando;
@@ -35,6 +39,7 @@ typedef struct Monitor{
     int max_alunos_so;
     int qtd_alunos_so_na_sala;
     int aula_finalizada;
+    int qtd_alunos_duvida_atendendo;
 
 }Monitor;
 
