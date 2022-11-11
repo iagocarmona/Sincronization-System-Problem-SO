@@ -2,11 +2,150 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Professor/professor.h"
-#include "AlunosSO/alunos_so.h"
-#include "AlunosDuvidas/alunos_duvidas.h"
-
 #include "resource_monitor.h"
+
+/* **************************************************************** */
+/*                    THREAD ALUNOS DUVIDA                         */
+/* **************************************************************** */
+
+void *alunosDuvidasThread(void *ptr){
+    int id = (intptr_t) ptr;
+
+    srand(time(NULL) + (id * 2));
+    int sleepTime = rand() % 5; 
+    sleep(sleepTime);
+
+    pthread_mutex_lock(&monitor.mutex); 
+
+    if(!monitor.professor_dando_aula && !monitor.professor_atendendo){
+        printf("\n\t\t🙋‍♂‍‍\b | alunoDuvida_%d chegou na porta do professor\n", id);
+        monitor.qtd_alunos_duvida_esperando++;
+        pthread_cond_wait(&monito.aluno_fila_duvida, &monitor.mutex);
+    }else if(){
+        
+    }
+
+    if(monitor.professor_atendendo){
+        printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d está aguardando atendimento do professor.\n", id);
+    }
+
+    printf("\n\t\t🙋‍♂‍‍\b | Professor ocupado! alunoDuvida_%d vai embora\n", id);
+    pthread_mutex_unlock(&monitor.mutex);
+    pthread_exit(0);
+}
+
+// void chegarSalaProfessor(int id){
+//     printf("\n\t\t🙋‍♂‍‍\b | alunoDuvida_%d chegou na porta do professor\n", id);
+//     sleep(1);
+// }
+
+// void aguardarProfessor(int id){
+//     printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d está aguardando atendimento do professor.\n", id);
+//     sleep(1);
+// }
+
+void tirarDuvidas(int id){
+    printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d vai tirar suas dúvidas...\n", id);
+    sleep(1);
+}
+
+void sairSalaProfessor(int id){
+    printf("\t\t🙋‍♂‍‍\b | alunoDuvida_%d saiu da sala do professor\n", id);
+    sleep(1);
+}
+
+/* **************************************************************** */
+/*                      THREAD ALUNOS SO                           */
+/* **************************************************************** */
+
+void *alunosSOThread(void *ptr){
+    int id = (intptr_t) ptr;
+
+    srand(time(NULL) + (id * 2));
+    int sleepTime = rand() % 8; 
+    sleep(sleepTime);
+
+    pthread_mutex_lock(&monitor.mutex);
+
+    if(monitor.professor_dando_aula == FALSE){
+        printf("\n\t👨‍💻 | alunoSO_%d entra na sala\n", id);
+        monitor.qtd_alunos_so_na_sala++;
+    }
+
+    pthread_mutex_unlock(&monitor.mutex);
+    pthread_exit(0);
+}
+
+void entrarSalaAula(int id){
+    printf("\n\t👨‍💻 | alunoSO_%d entra na sala\n", id);
+    sleep(1);
+}
+
+void sairSalaAula(int id){
+    printf("\t👨‍💻 | alunoSO_%d sai da sala\n", id);
+    sleep(1);
+}
+
+void aguardarAula(int id){
+    printf("\t👨‍💻 | alunoSO_%d aguardando professor começar a aula\n", id);
+    sleep(1);
+}
+
+void obaAulaSO(int id){
+    printf("\t👨‍💻 | alunoSO_%d Oba! Aula de SO!\n", id);
+}
+
+void chamarProfessor(int id){
+    printf("\n\t👨‍💻 | alunoSO_%d Avisa que chegou todos os alunos.\n", id);
+    sleep(1);
+}
+
+/* **************************************************************** */
+/*                        THREAD PROFESSOR                         */
+/* **************************************************************** */
+
+void *professorThread(){
+    pthread_mutex_lock(&monitor.mutex);
+
+    while(monitor.qtd_alunos_so_na_sala < monitor.max_alunos_so){
+        if(monitor.qtd_alunos_duvida_esperando == monitor.max_atendimento_professor){
+            printf("\n👨‍🏫 | Vou atender os alunos...\n");
+            sleep(1);
+        }
+        printf("\n👨‍🏫 | Professor está preparando a aula!\n");
+        sleep(1);
+    }
+    printf("👨‍🏫 | Vou dar aula!\n");
+    sleep(1);
+
+    pthread_mutex_unlock(&monitor.mutex);
+    pthread_exit(0);
+}
+
+void prepararAula(){
+    printf("\n👨‍🏫 | Professor está preparando a aula!\n");
+    sleep(1);
+}
+
+void atenderAlunos(){
+    printf("\n👨‍🏫 | Vou atender os alunos...\n");
+    sleep(1);
+}
+
+void darAula(){
+    printf("👨‍🏫 | Vou dar aula!\n");
+    sleep(1);
+}
+
+void dispensarAlunos(){
+    printf("👨‍🏫 | Aula acabou, dispensando alunos...\n");
+    sleep(1);
+}
+
+void irEmboraCasa(){
+    printf("👨‍🏫 | Professor indo embora pra casa...\n");
+    sleep(1);
+}
 
 int main()
 {
