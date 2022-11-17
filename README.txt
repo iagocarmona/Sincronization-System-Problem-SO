@@ -1,8 +1,8 @@
 Compilação:
-    Após acessar a pasta do projeto, basta executar o seguinte comando no terminal: make main
+    Após acessar a pasta do projeto, basta executar o seguinte comando no terminal: make semaforo
 
 Execução:
-    Após realizar a compilação, basta executar o comando ./main
+    Após realizar a compilação, basta executar o comando ./semaforo
 
 Bibliotecas não padrões:
     pthread.h: define os tipos e as funções usadas para a manipulação de threads.
